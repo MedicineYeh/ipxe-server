@@ -23,3 +23,4 @@ sudo docker run --rm -it --privileged -p 80:3000 -v YOUR_PUBLIC_DIRECTORY:/workd
 # Development build and execution
 1. npm install
 2. node app.js
+
