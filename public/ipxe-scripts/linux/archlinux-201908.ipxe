@@ -1,0 +1,31 @@
+#!ipxe
+
+# Set up the URL for the umounted ISO images
+
+set iso-root ${root-url}/linux/arch/archlinux-2019.08.01-x86_64
+set auto-script ${root-url}/linux/arch/script.sh
+
+initrd ${iso-root}/arch/boot/intel_ucode.img || goto failed
+initrd ${iso-root}/arch/boot/amd_ucode.img || goto failed
+initrd ${iso-root}/arch/boot/x86_64/archiso.img || goto failed
+kernel ${iso-root}/arch/boot/x86_64/vmlinuz || goto failed
+
+imgargs vmlinuz \
+        initrd=intel_ucode.img \
+        initrd=amd_ucode.img \
+        initrd=archiso.img \
+        archiso_http_srv=${iso-root}/ \
+        archisobasedir=arch \
+        ip=dhcp \
+        debug \
+        cow_spacesize=2G \
+        raid=noautodetect \
+        script=${auto-script}
+
+boot || goto failed
+
+:failed
+echo Press any key to return to the menu
+prompt
+exit
+

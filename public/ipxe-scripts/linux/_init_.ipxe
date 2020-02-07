@@ -1,0 +1,28 @@
+#!ipxe
+
+# Variables are specified in boot.ipxe.cfg
+
+:menu
+menu Install OS for ${initiator-iqn}
+item --gap --           -------------------------   Red Hat  ------------------------------
+item redhat-8.0         Install Red Hat 8.0
+item --gap --           ------------------------- Arch Linux ------------------------------
+item archlinux-201908   Install Arch Linux 2019/08
+item --gap --           -------------------------   Debian   ------------------------------
+item debian             Install Debian
+item --gap --           ------------------------- Chain Boot ------------------------------
+item blowfy             Chain boot to blowfy
+item
+item --key x _exit      E(x)it to previous menu...
+choose selected || goto menu
+
+# Exit will return success to previous menu/script
+iseq ${selected} _exit && exit ||
+# Chain call to the next script, goto menu on success return, goto failed on error
+chain --autofree ${selected}.ipxe && goto menu || goto failed
+
+:failed
+echo Press any key to return to the menu
+prompt
+goto menu
+

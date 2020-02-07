@@ -1,0 +1,17 @@
+#!ipxe
+
+# Set up the URL for the umounted ISO images
+set iso-root ${root-url}/vmware/esxi-latest
+set auto-script ${root-url}/vmware/ks.cfg
+
+initrd -n boot.cfg http://docker-service-pool.vet.tdc/api/parse/boot.cfg?root=${iso-root}&ks=${auto-script} || goto failed
+kernel -n mboot ${iso-root}/efi/boot/bootx64.efi || goto failed
+imgargs mboot -c boot.cfg
+
+boot || goto failed
+
+:failed
+echo Press any key to return to the menu
+prompt
+exit
+

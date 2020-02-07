@@ -1,0 +1,13 @@
+version: "3.0"
+services:
+  ipxe-server:
+    image: medicineyeh/ipxe-server
+    restart: always
+    privileged: true
+    environment:
+      - PUBLIC_DIR=/srv/http
+    volumes:
+      - /srv/http:/srv/http
+    ports:
+      - 8080:3000
+

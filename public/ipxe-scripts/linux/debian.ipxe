@@ -1,0 +1,17 @@
+#!ipxe
+
+# Set up the URL for the umounted ISO images
+set iso-root ${root-url}/linux/debian
+
+kernel ${iso-root}/linux || goto failed
+initrd ${iso-root}/initrd.gz || goto failed
+
+imgargs linux initrd=initrd.gz
+
+boot || goto failed
+
+:failed
+echo Press any key to return to the menu
+prompt
+exit
+

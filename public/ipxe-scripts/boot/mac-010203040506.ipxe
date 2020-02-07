@@ -1,0 +1,8 @@
+#!ipxe
+
+echo This is just an example
+sleep 2
+
+# Boot <boot-url>/menu.ipxe script if all other options have been exhausted
+chain --replace --autofree ${menu-url} ||
+

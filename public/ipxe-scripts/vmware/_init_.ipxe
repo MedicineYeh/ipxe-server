@@ -1,0 +1,22 @@
+#!ipxe
+
+# Variables are specified in boot.ipxe.cfg
+
+:menu
+menu Install VMware ESXi for ${initiator-iqn}
+item esxi-latest        Install latest ESXi
+item esxi-san           Install latest ESXi with SAN boot
+item
+item --key x _exit      E(x)it to previous menu...
+choose selected || goto menu
+
+# Exit will return success to previous menu/script
+iseq ${selected} _exit && exit ||
+# Chain call to the next script, goto menu on success return, goto failed on error
+chain --autofree ${selected}.ipxe && goto menu || goto failed
+
+:failed
+echo Press any key to return to the menu
+prompt
+goto menu
+

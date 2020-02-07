@@ -1,0 +1,24 @@
+#!ipxe
+
+# REQUIRED: Absolute URL to the server address
+set root-url http://service.os1.tw:8080
+
+# REQUIRED: Absolute URL to the menu script, used by boot.ipxe
+set menu-url ${root-url}/ipxe-scripts/menu.ipxe
+
+# OPTIONAL: Relative directory to boot.ipxe used to
+# override boot script for specific clients
+set boot-dir boot
+
+# OPTIONAL: What URL to use when sanbooting
+# Usually ${boot-url} is used, but required until NFS supports block device API
+set sanboot-url http://boot.smidsrod.lan
+
+# OPTIONAL: iSCSI server location and iSCSI IQNs
+# Must be specified as an IP, some clients have issues with name resolution
+# Initiator IQN is also calculated to use hostname, if present
+set iscsi-server 10.1.1.10
+set base-iqn iqn.2011-02.lan.smidsrod
+set base-iscsi iscsi:${iscsi-server}::::${base-iqn}
+isset ${hostname} && set initiator-iqn ${base-iqn}:${hostname} || set initiator-iqn ${base-iqn}:${mac}
+

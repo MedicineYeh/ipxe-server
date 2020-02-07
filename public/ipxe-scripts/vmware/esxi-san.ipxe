@@ -1,0 +1,13 @@
+#!ipxe
+
+# Set up the URL for the umounted ISO images
+
+#sanboot --no-describe iscsi:192.168.0.0:::1:iqn.2003-01.org.linux-iscsi.arch.x8664:sn.84e673397261
+sanboot --no-describe ${root-url}/vmware/VMware-VMvisor-Installer-6.7.0.iso
+boot || goto failed
+
+:failed
+echo Press any key to return to the menu
+prompt
+exit
+

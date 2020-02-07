@@ -1,0 +1,27 @@
+const path = require('path');
+const fs = require('fs').promises;
+
+const boot_linux = require('./linux');
+
+// TODO Add kISO HPE addon patch with detection of plarform from iPXE
+function boot_sles(serverInfo, host, dir_path, files) {
+    const rootURL = `http://${path.join(host, 'iso', dir_path, files[0])}`;
+
+    const addon = files.slice(1)
+        .map(x => `http://${path.join(host, 'iso', dir_path, x)}`).join(',');
+    const args = [
+        'install=${iso-root}',
+        (addon == '') ? '' : `addon=${addon}`,
+        'vga=normal',
+    ];
+    return boot_linux(
+        serverInfo,                     // Server information/description {manufacturer, product}
+        rootURL,                        // Root URL to the ISO image/directory path
+        ['/boot/x86_64/loader/initrd'], // List of possible initrd pathes
+        ['/boot/x86_64/loader/linux'],  // List of possible vmlinuz pathes
+        args.join(' '),                 // Kernel arguments
+        'ks=\${ks-script}'              // Kickstart/preceed template with ks-script variable on target machine
+    );
+}
+
+module.exports = boot_sles;

@@ -1,0 +1,24 @@
+{
+  "name": "esxi-config-parser",
+  "version": "1.0.0",
+  "description": "Parsing ESXi iso boot.cfg and patch to http boot mode",
+  "license": "MIT",
+  "main": "app.js",
+  "dependencies": {
+    "await-exec": "^0.1.2",
+    "express": "*",
+    "express-async-errors": "^3.1.1",
+    "morgan": "^1.9.1",
+    "replacestream": "*",
+    "serve-index": "^1.9.1",
+    "uniqid": "^5.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/username/repository.git"
+  },
+  "engines": {
+    "node": ">= 10.0.0",
+    "npm": ">= 3.0.0"
+  }
+}

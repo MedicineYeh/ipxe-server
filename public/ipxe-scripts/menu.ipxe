@@ -1,0 +1,64 @@
+#!ipxe
+
+# Variables are specified in boot.ipxe.cfg
+
+# Some menu defaults
+set menu-timeout 0
+set submenu-timeout ${menu-timeout}
+set menu-default _vmware
+
+# Figure out if client is 64-bit capable
+cpuid --ext 29 && set arch x64 || set arch x86
+cpuid --ext 29 && set archl amd64 || set archl i386
+
+# Console might cause layout problem on booting to UEFI interface with sanboot
+#console --x 800 --y 600
+#console --picture ${root-url}/ipxe-scripts/bg.png
+
+###################### MAIN MENU ####################################
+:menu
+imgfree
+menu iPXE boot menu for ${initiator-iqn}
+item --gap --              Server ${manufacturer} ${product}
+item --gap --              ------------------------- Dynamic Scripts ------------------------------
+item --key v /ipxe/vmware  (V)Mware ESXi images...
+item --key l /ipxe/linux   (L)inux images...
+item --key s /ipxe/spp     (S)PP images...
+item
+item --key a /ipxe         (A)uto Menu from /iso...
+item --key b _local        (B)oot first priority local disk...
+item --gap --              ------------------------- Manual Scripts ------------------------------
+item         vmware        VMware ESXi images...
+item         linux         Linux images...
+item --key u utility       (U)tility tools...
+item --gap --              ------------------------- Advanced options -------------------------------
+item --key c _config       (C)onfigure settings
+item _shell                Drop to iPXE shell
+item _reboot               Reboot computer
+item
+item --key x _exit         E(x)it iPXE and continue BIOS boot
+choose --timeout ${menu-timeout} --default ${menu-default} selected || goto menu
+
+# Exit will return success to BIOS
+iseq ${selected} _exit && exit ||
+# Reboot will reboot the host
+iseq ${selected} _reboot && reboot ||
+# Enter shell
+iseq ${selected} _shell && shell ||
+# Enter config menu
+iseq ${selected} _config && config ||
+# Boot to local disk
+iseq ${selected} _local && goto _local ||
+# Chain call to the next script, goto menu on success return, goto failed on error
+chain --autofree ${selected}/_init_.ipxe && goto menu || goto failed
+
+:_local
+echo Go back to BIOS next boot device
+sleep 2
+exit 1
+
+:failed
+echo Press any key to return to the menu
+prompt
+goto menu
+
