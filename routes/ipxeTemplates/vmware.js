@@ -14,7 +14,16 @@ echo Server \${Green}${serverInfo.manufacturer}\${NC} \${White}${serverInfo.prod
 echo
 isset \${ks-script} && echo Using KS: \${Cyan}\${ks-script}\${NC} ||
 
-initrd -n boot.cfg http://${host}/api/parse/boot.cfg?root=\${iso-root}&ks=\${ks-script} || goto failed
+# Additional boot arguments
+set args
+prompt --timeout 3000 --key e Press 'e' to add additional boot arguments in 3 seconds... || goto final
+echo Examples:
+echo   Enable serial ports: gdbPort=none logPort=none tty2Port=com1
+echo   Text mode and serial ports: text gdbPort=none logPort=none tty2Port=com1
+echo -n Additional arguments: && read args
+
+:final
+initrd -n boot.cfg http://${host}/api/parse/boot.cfg?root=\${iso-root:uristring}&ks=\${ks-script:uristring}&args=\${args:uristring} || goto failed
 kernel -n mboot \${iso-root}/efi/boot/bootx64.efi || goto failed
 imgargs mboot -c boot.cfg
 

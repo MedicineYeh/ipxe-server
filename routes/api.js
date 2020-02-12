@@ -28,19 +28,20 @@ router.get('/parse/boot.cfg', (req, res) => {
     if (query.root === undefined || !query.root.startsWith('http://')) {
         res.send('Missing GET parameter "root" or "root" does not start with "http://"');
     } else {
-        console.log('Generating config with root=' + query.root + ' and ks=' + query.ks);
-        kernelopt = (query.ks) ? 'ks=' + query.ks + ' ' : '';
+        console.log(`Generating config with root=${query.root}, ks=${query.ks} and args=${query.args}`);
+        const kernelopt = (query.ks) ? `ks=${query.ks} ${query.args}` : query.args;
         download(query.root + '/boot.cfg',
             (res_stream) => {
                 res_stream
                     .pipe(replaceStream('=/', '='))
                     .pipe(replaceStream(' /', ' '))
-                    .pipe(replaceStream('prefix=', 'prefix=' + query.root))
-                    .pipe(replaceStream('kernelopt=', 'kernelopt=' + kernelopt))
+                    .pipe(replaceStream('prefix=', `prefix=${query.root}`))
+                    .pipe(replaceStream('cdromBoot', ''))                         // Remove unused kernelopt
+                    .pipe(replaceStream('kernelopt=', `kernelopt=${kernelopt} `)) // Append kernelopt
                     .pipe(res);
             }, (msg) => {
                 console.log(msg);
-                res.send('Error when querying ' + query.root + '/boot.cfg' + '\n' + msg);
+                res.send(`Error when querying ${query.root}/boot.cfg\n${msg}`);
             });
     }
 });
