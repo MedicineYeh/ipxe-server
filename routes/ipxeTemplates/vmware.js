@@ -1,6 +1,6 @@
 const path = require('path');
 
-function boot_vmware(serverInfo, host, iso_path) {
+module.exports = (serverInfo, host, iso_path) => {
     if (serverInfo.manufacturer === undefined)
         serverInfo.manufacturer = '\${manufacturer}'
     if (serverInfo.product === undefined)
@@ -40,5 +40,3 @@ echo Press any key to return to the menu
 prompt
 exit`;
 }
-
-module.exports = boot_vmware;

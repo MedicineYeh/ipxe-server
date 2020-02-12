@@ -4,7 +4,7 @@ const fs = require('fs').promises;
 const boot_linux = require('./linux');
 
 // TODO Add kISO HPE addon patch with detection of plarform from iPXE
-function boot_sles(serverInfo, host, dir_path, files) {
+module.exports = (serverInfo, host, dir_path, files) => {
     const rootURL = `http://${path.join(host, 'iso', dir_path, files[0])}`;
 
     const addon = files.slice(1)
@@ -23,5 +23,3 @@ function boot_sles(serverInfo, host, dir_path, files) {
         'ks=\${ks-script}'              // Kickstart/preceed template with ks-script variable on target machine
     );
 }
-
-module.exports = boot_sles;

@@ -1,6 +1,6 @@
 const path = require('path');
 
-function boot_linux(serverInfo, rootURL, initrdList, vmlinuzList, kernelArg, ksTemplate) {
+module.exports = (serverInfo, rootURL, initrdList, vmlinuzList, kernelArg, ksTemplate) => {
     if (serverInfo.manufacturer === undefined)
         serverInfo.manufacturer = '\${manufacturer}'
     if (serverInfo.product === undefined)
@@ -57,5 +57,3 @@ echo Press any key to return to the menu
 prompt
 exit`;
 }
-
-module.exports = boot_linux;

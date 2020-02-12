@@ -2,7 +2,7 @@ const path = require('path');
 
 const boot_linux = require('./linux');
 
-function boot_archlinux(serverInfo, host, dir_path, files) {
+module.exports = (serverInfo, host, dir_path, files) => {
     const rootURL = `http://${path.join(host, 'iso', dir_path, files[0])}`;
 
     const args = [
@@ -21,5 +21,3 @@ function boot_archlinux(serverInfo, host, dir_path, files) {
         'script=\${ks-script}'             // Kickstart/preceed template with ks-script variable on target machine
     );
 }
-
-module.exports = boot_archlinux;
