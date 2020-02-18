@@ -6,7 +6,6 @@ const querystring = require('querystring');
 const boot_vmware = require('./ipxeTemplates/vmware');
 const boot_rhel = require('./ipxeTemplates/rhel');
 const boot_sles = require('./ipxeTemplates/sles');
-const boot_ubuntu = require('./ipxeTemplates/ubuntu');
 const boot_debian = require('./ipxeTemplates/debian');
 const boot_archlinux = require('./ipxeTemplates/archlinux');
 
@@ -66,9 +65,6 @@ router.get('/linux*', async (req, res, next) => {
             break;
 
         case 'ubuntu':
-            boot_target = boot_ubuntu;
-            break;
-
         case 'debian':
             boot_target = boot_debian;
             break;

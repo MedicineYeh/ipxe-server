@@ -3,6 +3,10 @@ iPXE Linux/ESXi auto menu and file server.
 ISO files will be automatically mounted by HTTP requests.
 This service is capable of parsing ESXi iso boot.cfg and patch to http boot mode.
 
+# Preparation
+1. Download netboot image from (http://cdimage.ubuntu.com/netboot/)[http://cdimage.ubuntu.com/netboot/]
+2. Place it to {ROOT}/iso/netboot/netboot.iso
+
 # Execution
 ```
 docker-compose up -d
