@@ -39,7 +39,7 @@ goto wait_user
 
 :wait_user
 echo
-prompt --timeout 3000 --key e Press 'e' to edit kernel arguments in 3 seconds... || goto final
+prompt --timeout 2000 --key e Press 'e' to edit kernel arguments in 2 seconds... || goto final
 echo -n Kernel Arguments: && read args
 
 :final

@@ -16,7 +16,7 @@ isset \${ks-script} && echo Using KS: \${Cyan}\${ks-script}\${NC} ||
 
 # Additional boot arguments
 set args
-prompt --timeout 3000 --key e Press 'e' to add additional boot arguments in 3 seconds... || goto final
+prompt --timeout 2000 --key e Press 'e' to add additional boot arguments in 2 seconds... || goto final
 echo Examples:
 echo   Enable serial ports: gdbPort=none logPort=none tty2Port=com1
 echo   Text mode and serial ports: text gdbPort=none logPort=none tty2Port=com1
