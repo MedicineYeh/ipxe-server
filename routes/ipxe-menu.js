@@ -92,6 +92,7 @@ router.get(['/*/_init_.ipxe', '/*'], async (req, res, next) => {
     if (req.info.os === 'linux' && req.info.distribution !== undefined) {
         const allSubDirs = await getDirectories(dirPath, 2);
         const osDirectories = allSubDirs.filter(name => name.split('/').length == 1)
+                                        .filter(name => name != 'EMPTY_FOLDER')
                                         .map(name => name.split('/')[0])
                                         .sort();
         const directories = allSubDirs.filter(name => name.split('/').length != 1)
