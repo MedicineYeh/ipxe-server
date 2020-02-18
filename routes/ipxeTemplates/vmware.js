@@ -12,6 +12,8 @@ set iso-root http://${path.join(host, 'iso', iso_path)}
 echo Server \${Green}${serverInfo.manufacturer}\${NC} \${White}${serverInfo.product}\${NC}
 
 echo
+# Uncomment below to use ks script manually
+# set ks-script http://${path.join(host, 'ks/vmware', 'default.cfg')}
 isset \${ks-script} && echo Using KS: \${Cyan}\${ks-script}\${NC} ||
 
 # Additional boot arguments
