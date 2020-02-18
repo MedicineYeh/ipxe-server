@@ -15,8 +15,8 @@ module.exports = (serverInfo, host, dir_path, files) => {
     return boot_linux(
         serverInfo,          // Server information/description {manufacturer, product}
         rootURL,             // Root URL to the ISO image/directory path
-        ['/casper/vmlinuz'], // List of possible initrd pathes
         ['/casper/initrd'],  // List of possible vmlinuz pathes
+        ['/casper/vmlinuz'], // List of possible initrd pathes
         args.join(' '),      // Kernel arguments
         ks_args.join(' ')    // Kickstart/preceed template with ks-script variable on target machine
     );

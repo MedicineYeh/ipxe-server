@@ -15,8 +15,8 @@ module.exports = (serverInfo, host, dir_path, files) => {
     return boot_linux(
         serverInfo,                 // Server information/description {manufacturer, product}
         rootURL,                    // Root URL to the ISO image/directory path
-        ['/install.amd/vmlinuz'],   // List of possible initrd pathes
         ['/install.amd/initrd.gz'], // List of possible vmlinuz pathes
+        ['/install.amd/vmlinuz'],   // List of possible initrd pathes
         args.join(' '),             // Kernel arguments
         ks_args.join(' ')           // Kickstart/preceed template with ks-script variable on target machine
     );
