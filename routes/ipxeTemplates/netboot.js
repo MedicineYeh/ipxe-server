@@ -9,7 +9,7 @@ module.exports = (serverInfo, netbootURL, rootURL, kernelArg, ksTemplate) => {
     const fixedArgs = [
         'debian-installer/locale=en_US',
         'keyboard-configuration/layoutcode=us',
-        'localechooser/translation/warn-light=true,',
+        'localechooser/translation/warn-light=true',
         'localechooser/translation/warn-severe=true',
         'netcfg/choose_interface=auto',
         'netcfg/get_hostname=ubuntu',
