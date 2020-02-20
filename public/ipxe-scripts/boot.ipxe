@@ -1,4 +1,7 @@
 #!ipxe
+# Global variables used by all other iPXE scripts
+chain --autofree settings.ipxe ||
+
 echo Server info:
 echo ....Host Name: ${White}${hostname}${NC}
 echo ....MAC: ${White}${mac:hexraw}${NC}
@@ -7,11 +10,8 @@ echo ....Network chip: ${White}${chip}${NC}
 echo
 echo Ready to chainboot next boot.ipxe
 
-# Global variables used by all other iPXE scripts
-chain --autofree settings.ipxe ||
-
 # Force entering menu if necessary
-prompt --key b --timeout 1300 Press b to skip host bindings... && chain --replace --autofree ${menu-url} ||
+prompt --key b --timeout 1800 Press b to skip host bindings... && chain --replace --autofree ${menu-url} ||
 
 # Boot <boot-url>/<boot-dir>/hostname-<hostname>.ipxe
 # if hostname DHCP variable is set and script is present
