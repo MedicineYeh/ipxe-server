@@ -16,29 +16,23 @@ module.exports = (serverInfo, netbootURL, rootURL, kernelArg, ksTemplate) => {
     ];
 
     return `#!ipxe
-# Set up the URL for the ISO images
+### Set up the URL for the ISO images
 set iso-root ${rootURL}
+set kernelArg ${kernelArg}
+set ksTemplate ${ksTemplate}
+
 echo Server \${Green}${serverInfo.manufacturer}\${NC} \${White}${serverInfo.product}\${NC}
+echo
+
+### Uncomment and edit below to use ks script manually
+# set ks-script http://127.0.0.1/ks/linux/distribution/default.txt
+isset \${ks-script} && echo Using KS: \${Cyan}\${ks-script}\${NC} ||
+isset \${ks-script} && set args \${kernelArg} \${ksTemplate} || set args \${kernelArg}
+echo
 
 initrd -n initrd.img ${netbootURL}/initrd.gz || goto failed
 kernel -n vmlinuz ${netbootURL}/linux || goto failed
 
-# Uncomment below to use ks script manually
-# set ks-script http://.....
-isset \${ks-script} && goto withks || goto withoutks
-
-:withks
-echo
-echo Using KS: \${Cyan}\${ks-script}\${NC}
-set args ${kernelArg} ${ksTemplate}
-goto wait_user
-
-:withoutks
-set args ${kernelArg}
-goto wait_user
-
-:wait_user
-echo
 prompt --timeout 2000 --key e Press 'e' to edit kernel arguments in 2 seconds... || goto final
 echo -n Kernel Arguments: && read args
 
