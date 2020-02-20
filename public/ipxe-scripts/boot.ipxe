@@ -1,4 +1,11 @@
 #!ipxe
+echo Server info:
+echo ....Host Name: ${White}${hostname}${NC}
+echo ....MAC: ${White}${mac:hexraw}${NC}
+echo ....PCI adapter: ${White}${pci/${busloc}.0.2}${pci/${busloc}.2.2}${NC}
+echo ....Network chip: ${White}${chip}${NC}
+echo
+echo Ready to chainboot next boot.ipxe
 
 # Global variables used by all other iPXE scripts
 chain --autofree settings.ipxe ||
