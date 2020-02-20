@@ -7,16 +7,16 @@ module.exports = (serverInfo, host, iso_path) => {
         serverInfo.product = '\${product}'
 
     return `#!ipxe
-# Set up the URL for the ISO images
+### Set up the URL for the ISO images
 set iso-root http://${path.join(host, 'iso', iso_path)}
 echo Server \${Green}${serverInfo.manufacturer}\${NC} \${White}${serverInfo.product}\${NC}
-
 echo
-# Uncomment below to use ks script manually
+
+### Uncomment below to use ks script manually
 # set ks-script http://${path.join(host, 'ks/vmware', 'default.cfg')}
 isset \${ks-script} && echo Using KS: \${Cyan}\${ks-script}\${NC} ||
 
-# Additional boot arguments
+### Additional boot arguments
 set args
 prompt --timeout 2000 --key e Press 'e' to add additional boot arguments in 2 seconds... || goto final
 echo Examples:
