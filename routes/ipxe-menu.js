@@ -24,7 +24,9 @@ cpuid --ext 29 && set archl amd64 || set archl i386
     }
     // Set the default ks script when entering each OS's main menu
     if (os === 'vmware' && url.split('/').length == 1)
-        env_setup += `set ks-script http://${path.join(host, 'ks', url, 'default.cfg')}`;
+        env_setup += `set ks-script http://${path.join(host, 'ks/vmware/default.cfg')}`;
+    else if (os === 'linux' && url.split('/').length == 2 && (distribution === 'ubuntu' || distribution === 'debian'))
+        env_setup += `set ks-script http://${path.join(host, 'ks/linux', distribution, 'default.seed')}`;
     else if (os === 'linux' && url.split('/').length == 2)
         env_setup += `set ks-script`;
 
