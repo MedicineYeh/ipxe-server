@@ -1,6 +1,6 @@
 const path = require('path');
 
-const boot_netboot = require('./netboot');
+const boot_netboot = require('./netboot-debian');
 
 module.exports = (serverInfo, host, dir_path, files) => {
     const rootURL = `http://${path.join(host, 'iso', dir_path, files[0])}`;
