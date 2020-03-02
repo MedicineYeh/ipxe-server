@@ -23,7 +23,11 @@ function download(url, stream_cb, cb) {
 }
 
 router.get('/parse/boot.cfg', (req, res) => {
-    const query = req.query;
+    const query = {
+        'root': req.query.root ? req.query.root : '',
+        'ks': req.query.ks ? req.query.ks : '',
+        'args': req.query.args ? req.query.args : '',
+    };
 
     if (query.root === undefined || !query.root.startsWith('http://')) {
         res.send('Missing GET parameter "root" or "root" does not start with "http://"');
