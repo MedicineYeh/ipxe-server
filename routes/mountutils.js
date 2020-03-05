@@ -41,6 +41,7 @@ exports.quotePath = function(path) {
  *
  */
 exports.isMounted = async function(path, isDevice = false) {
+    path = path.replace(/\/$/, '');
     try {
         const stat = await fs.stat(path);
         const mtab = await fs.readFile('/etc/mtab', {
@@ -49,8 +50,8 @@ exports.isMounted = async function(path, isDevice = false) {
 
         mountInfo = mtab.split('\n').find(line => {
             [filePath, mountpoint, fstype, fsopts] = line.split(' ');
-            if (isDevice && filePath == path) return true;
-            if (!isDevice && mountpoint == path) return true;
+            if (isDevice && filePath.replace(/\/$/, '') == path) return true;
+            if (!isDevice && mountpoint.replace(/\/$/, '') == path) return true;
         })
 
         if (mountInfo) return true;
@@ -82,6 +83,8 @@ exports.isMounted = async function(path, isDevice = false) {
  */
 
 exports.mount = async function(filePath, dirPath, options = {}) {
+    filePath = filePath.replace(/\/$/, '');
+    dirPath = dirPath.replace(/\/$/, '');
     // See if there is already something mounted at the path
     const mounted = await this.isMounted(dirPath, false);
     if (mounted) {
@@ -144,6 +147,7 @@ exports.mount = async function(filePath, dirPath, options = {}) {
  */
 
 exports.umount = async function(path, isDevice = false, options = {}) {
+    path = path.replace(/\/$/, '');
     // See if there is already something mounted at the path
     const mounted = await this.isMounted(path, false);
     if (!mounted) return true;
