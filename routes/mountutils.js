@@ -85,22 +85,22 @@ exports.isMounted = async function(path, isDevice = false) {
 exports.mount = async function(filePath, dirPath, options = {}) {
     filePath = filePath.replace(/\/$/, '');
     dirPath = dirPath.replace(/\/$/, '');
-    // See if there is already something mounted at the path
-    const mounted = await this.isMounted(dirPath, false);
-    if (mounted) {
-        try {
-            const stat = await fs.stat(filePath);
-            const cache = fileCaches[filePath];
-            const unchanged = cache != undefined && (cache.ctimeMs == stat.ctimeMs) && (cache.mtimeMs == stat.mtimeMs);
-            fileCaches[filePath] = stat;
+    try {
+        const stat = await fs.stat(filePath);
+        const cache = fileCaches[filePath];
+        const unchanged = cache != undefined && (cache.ctimeMs == stat.ctimeMs) && (cache.mtimeMs == stat.mtimeMs);
+        fileCaches[filePath] = {...stat, 'lastAccessTime': Date.now(), 'mountPoint': dirPath};
 
+        // See if there is already something mounted at the path
+        const mounted = await this.isMounted(dirPath, false);
+        if (mounted) {
             // Return success if nothing changed. Un-mount the mount point if the file has been changed.
             if (unchanged) return true;
             else await this.umount(dirPath, false);
-        } catch (err) {
-            console.log(err);
-            return false;
         }
+    } catch (err) {
+        console.log(err);
+        return false;
     }
 
     // Try to create a new directory if necessary
@@ -161,6 +161,21 @@ exports.umount = async function(path, isDevice = false, options = {}) {
         console.log(err.stderr);
         return false;
     }
+    return true;
+}
+
+exports.reclaim = async function() {
+    const now = Date.now();
+    // Reclaim/Unmount the device if it's been more than 1 hour since last access.
+    const removeList = Object.keys(fileCaches)
+                             .filter(key => (now - fileCaches[key].lastAccessTime > 1 * 60 * 60 * 1000));
+    Promise.all(removeList.map(filePath => {
+        const dirPath = fileCaches[filePath].mountPoint;
+        console.log(`Reclaim loop device from ${dirPath}`);
+        delete fileCaches[filePath];
+        return this.umount(dirPath);
+    }));
+
     return true;
 }
 

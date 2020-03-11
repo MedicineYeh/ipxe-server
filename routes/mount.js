@@ -61,4 +61,10 @@ router.use('/', async (req, res, next) => {
     return next();
 });
 
+async function reclaim_loop() {
+    await mountutil.reclaim();
+    setTimeout(reclaim_loop, 1000);
+}
+setTimeout(reclaim_loop, 1000);
+
 module.exports = router;
