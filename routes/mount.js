@@ -63,7 +63,8 @@ router.use('/', async (req, res, next) => {
 
 async function reclaim_loop() {
     await mountutil.reclaim();
-    setTimeout(reclaim_loop, 1000);
+    // Period of 60s
+    setTimeout(reclaim_loop, 60 * 1000);
 }
 setTimeout(reclaim_loop, 1000);
 
