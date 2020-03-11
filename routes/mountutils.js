@@ -128,6 +128,8 @@ exports.mount = async function(filePath, dirPath, options = {}) {
         await exec(cmd.join(' '));
     } catch (err) {
         console.log(err.stderr);
+        // Exit to force restart the whole docker service when running out of loop devices
+        if (err.stderr.includes("can't setup loop device")) process.exit(87);
         return false;
     }
     return true;
