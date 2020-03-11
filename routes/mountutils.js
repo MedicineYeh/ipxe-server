@@ -149,7 +149,7 @@ exports.mount = async function(filePath, dirPath, options = {}) {
 exports.umount = async function(path, isDevice = false, options = {}) {
     path = path.replace(/\/$/, '');
     // See if there is already something mounted at the path
-    const mounted = await this.isMounted(path, false);
+    const mounted = await this.isMounted(path, isDevice);
     if (!mounted) return true;
 
     const cmd = [options.mountPath ? options.mountPath : '/bin/umount'];
