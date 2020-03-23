@@ -45,7 +45,7 @@ router.use('/', async (req, res, next) => {
     const mnt_path = path.join(MNT_DIR, url);
 
     // Serve file list or static file if the URL route contains .iso file
-    if (url.search(/\/.*\.iso/g) >= 0) {
+    if (url.search(/\/.*\.iso$/g) >= 0 || url.search(/\/.*\.iso\//g) >= 0) {
         if (await isDirectory(mnt_path)) {
             return serveIndex(MNT_DIR, {
                 view: 'details',

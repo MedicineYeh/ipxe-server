@@ -89,7 +89,7 @@ router.get(['/*/_init_.ipxe', '/*'], async (req, res, next) => {
     if (req.info.isISO) return next();
 
     const dirPath = path.join(ISO_DIR, req.info.route);
-    const isoFiles = (await fs.readdir(dirPath)).filter(file => file.search(/.*\.iso/g) >= 0).sort();
+    const isoFiles = (await fs.readdir(dirPath)).filter(file => file.search(/.*\.iso$/g) >= 0).sort();
 
     if (req.info.os === 'linux' && req.info.distribution !== undefined) {
         const allSubDirs = await getDirectories(dirPath, 2);

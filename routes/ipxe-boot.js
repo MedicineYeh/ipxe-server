@@ -40,7 +40,7 @@ router.get('/linux*', async (req, res, next) => {
         // No specific ISO specified
         // Simply return if target path is not a directory
         if (!(await fs.stat(isoDir)).isDirectory()) return next();
-        isoFiles = (await fs.readdir(isoDir)).filter(file => file.search(/.*\.iso/g) >= 0).sort();
+        isoFiles = (await fs.readdir(isoDir)).filter(file => file.search(/.*\.iso$/g) >= 0).sort();
     }
 
     // If there is no any iso file,
