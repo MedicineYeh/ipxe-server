@@ -3,10 +3,10 @@ const path = require('path');
 const boot_linux = require('./linux');
 
 module.exports = (serverInfo, host, dir_path, files) => {
-    const rootURL = `http://${path.join(host, 'iso', dir_path, files[0])}`;
+    const rootURL = encodeURI(`http://${path.join(host, 'iso', dir_path, files[0])}`);
 
     const repos = files.slice(1)
-        .map(x => `inst.addrepo=${path.basename(x, '.iso')},http://${path.join(host, 'iso', dir_path, x)}`);
+        .map(x => `inst.addrepo=${path.basename(x, '.iso')},http://${encodeURI(path.join(host, 'iso', dir_path, x))}`);
     const args = [
         'inst.repo=${iso-root}',
         repos,

@@ -74,7 +74,7 @@ router.get('/*', async (req, res, next) => {
 
     if (await notDirectory(dirPath)) {
         res.setHeader('content-type', 'text/plain');
-        res.send(kickstart_file(`http://${path.join(req.headers.host, 'ks', req.info.route)}`));
+        res.send(kickstart_file(encodeURI(`http://${path.join(req.headers.host, 'ks', req.info.route)}`)));
     } else {
         const directories = await getDirectories(dirPath);
         const allFiles = (await fs.readdir(dirPath)).filter(x => !x.startsWith('.'));
@@ -82,8 +82,8 @@ router.get('/*', async (req, res, next) => {
         const files = allFiles.filter(x => !dirSet.has(x));
 
         const items = [
-            ...directories.map(x => `item ${path.join('/ipxe/ks', req.info.route, x, '_init_')} ${x}...`),
-            ...files.sort().map(x => `item ${path.join('/ipxe/ks', req.info.route, x)} ${x}`),
+            ...directories.map(x => `item ${encodeURI(path.join('/ipxe/ks', req.info.route, x, '_init_'))} ${x}...`),
+            ...files.sort().map(x => `item ${encodeURI(path.join('/ipxe/ks', req.info.route, x))} ${x}`),
         ];
 
         res.setHeader('content-type', 'text/plain');

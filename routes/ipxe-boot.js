@@ -15,7 +15,7 @@ const router = express.Router();
 // VMware iPXE boot
 router.get('/vmware*', async (req, res, next) => {
     const serverInfo = req.query;
-    const rootURL = `http://${path.join(req.headers.host, 'iso', req.info.route)}`
+    const rootURL = encodeURI(`http://${path.join(req.headers.host, 'iso', req.info.route)}`)
 
     // Generate iPXE boot script only if it's a file
     if ((await fs.stat(path.join(ISO_DIR, req.info.route))).isFile()) {

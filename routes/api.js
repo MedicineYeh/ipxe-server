@@ -24,8 +24,8 @@ function download(url, stream_cb, cb) {
 
 router.get('/parse/boot.cfg', (req, res) => {
     const query = {
-        'root': req.query.root ? req.query.root : '',
-        'ks': req.query.ks ? req.query.ks : '',
+        'root': req.query.root ? encodeURI(req.query.root) : '',
+        'ks': req.query.ks ? encodeURI(req.query.ks) : '',
         'args': req.query.args ? req.query.args : '',
     };
 
@@ -45,7 +45,7 @@ router.get('/parse/boot.cfg', (req, res) => {
                     .pipe(res);
             }, (msg) => {
                 console.log(msg);
-                res.send(`Error when querying ${query.root}/boot.cfg\n${msg}`);
+                res.status(404).send(`Error when querying ${query.root}/boot.cfg\n${msg}`);
             });
     }
 });

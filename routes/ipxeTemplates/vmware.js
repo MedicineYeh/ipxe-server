@@ -8,12 +8,12 @@ module.exports = (serverInfo, host, iso_path) => {
 
     return `#!ipxe
 ### Set up the URL for the ISO images
-set iso-root http://${path.join(host, 'iso', iso_path)}
+set iso-root http://${encodeURI(path.join(host, 'iso', iso_path))}
 echo Server \${Green}${serverInfo.manufacturer}\${NC} \${White}${serverInfo.product}\${NC}
 echo
 
 ### Uncomment below to use ks script manually
-# set ks-script http://${path.join(host, 'ks/vmware', 'default.cfg')}
+# set ks-script http://${encodeURI(path.join(host, 'ks/vmware', 'default.cfg'))}
 isset \${ks-script} && echo Using KS: \${Cyan}\${ks-script}\${NC} ||
 
 ### Additional boot arguments

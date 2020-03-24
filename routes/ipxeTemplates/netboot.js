@@ -3,7 +3,7 @@ const path = require('path');
 const boot_linux = require('./linux');
 
 module.exports = (serverInfo, host, dir_path, files) => {
-    const rootURL = `http://${path.join(host, 'iso', dir_path, files[0])}`;
+    const rootURL = encodeURI(`http://${path.join(host, 'iso', dir_path, files[0])}`);
 
     const args = [
         'vga=normal',

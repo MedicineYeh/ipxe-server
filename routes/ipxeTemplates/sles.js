@@ -5,10 +5,10 @@ const boot_linux = require('./linux');
 
 // TODO Add kISO HPE addon patch with detection of plarform from iPXE
 module.exports = (serverInfo, host, dir_path, files) => {
-    const rootURL = `http://${path.join(host, 'iso', dir_path, files[0])}`;
+    const rootURL = encodeURI(`http://${path.join(host, 'iso', dir_path, files[0])}`);
 
     const addon = files.slice(1)
-        .map(x => `http://${path.join(host, 'iso', dir_path, x)}`).join(',');
+        .map(x => `http://${encodeURI(path.join(host, 'iso', dir_path, x))}`).join(',');
     const args = [
         'install=${iso-root}',
         (addon == '') ? '' : `addon=${addon}`,

@@ -24,9 +24,9 @@ cpuid --ext 29 && set archl amd64 || set archl i386
     }
     // Set the default ks script when entering each OS's main menu
     if (os === 'vmware' && url.split('/').length == 1)
-        env_setup += `set ks-script http://${path.join(host, 'ks/vmware/default.cfg')}`;
+        env_setup += `set ks-script http://${encodeURI(path.join(host, 'ks/vmware/default.cfg'))}`;
     else if (os === 'linux' && url.split('/').length == 2 && (distribution === 'ubuntu' || distribution === 'debian'))
-        env_setup += `set ks-script http://${path.join(host, 'ks/linux', distribution, 'default.seed')}`;
+        env_setup += `set ks-script http://${encodeURI(path.join(host, 'ks/linux', distribution, 'default.seed'))}`;
     else if (os === 'linux' && url.split('/').length == 2)
         env_setup += `set ks-script`;
 
@@ -40,7 +40,7 @@ item --gap --    Server \${manufacturer} \${product}
 item --gap --    ------------------------- Installing ------------------------------
 ${item_list}
 item
-item --key k /ipxe/ks/${path.join(os, distribution)}/_init_      (k)ick start script selection menu...
+item --key k /ipxe/ks/${encodeURI(path.join(os, distribution))}/_init_      (k)ick start script selection menu...
 item --key x _exit      E(x)it to previous menu...
 choose selected || goto menu
 
@@ -109,9 +109,9 @@ router.get(['/*/_init_.ipxe', '/*'], async (req, res, next) => {
 
 
         const items = [
-            ...directories.map(x => `item ${path.join('/ipxe', req.info.route, x, '_init_')} ${x}...`),
-            ...osDirectories.map(x => `item ${path.join('/ipxe', req.info.route, x)} Install ${x}`),
-            ...isoFiles.map(x => `item ${path.join('/ipxe', req.info.route, x)} Install ${x}`),
+            ...directories.map(x => `item ${encodeURI(path.join('/ipxe', req.info.route, x, '_init_'))} ${x}...`),
+            ...osDirectories.map(x => `item ${encodeURI(path.join('/ipxe', req.info.route, x))} Install ${x}`),
+            ...isoFiles.map(x => `item ${encodeURI(path.join('/ipxe', req.info.route, x))} Install ${x}`),
         ];
 
         res.setHeader('content-type', 'text/plain');
@@ -119,8 +119,8 @@ router.get(['/*/_init_.ipxe', '/*'], async (req, res, next) => {
     } else {
         const directories = await getDirectories(dirPath);
         const items = [
-            ...directories.map(x => `item ${path.join('/ipxe', req.info.route, x, '_init_')} ${x}...`),
-            ...isoFiles.map(x => `item ${path.join('/ipxe', req.info.route, x)} Install ${x}`),
+            ...directories.map(x => `item ${encodeURI(path.join('/ipxe', req.info.route, x, '_init_'))} ${x}...`),
+            ...isoFiles.map(x => `item ${encodeURI(path.join('/ipxe', req.info.route, x))} Install ${x}`),
         ];
 
         res.setHeader('content-type', 'text/plain');
