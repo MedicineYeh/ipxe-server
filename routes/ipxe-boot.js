@@ -57,6 +57,8 @@ router.get('/linux*', async (req, res, next) => {
             boot_target = boot_sles;
             break;
 
+        case 'oracle':
+        case 'oracleos':
         case 'redhat':
         case 'rhel':
         case 'centos':
