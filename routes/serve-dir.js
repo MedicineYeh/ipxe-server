@@ -368,7 +368,8 @@ function serveIndex(root, options = {}) {
                     '  form.action = this.value.split(\'\\\\\').slice(-1)[0];' +
                     '  form.submit();' +
                     '}"></form></div>'),
-                ' <h2 style="font-size: 30px;margin-bottom: 12px;">Index of ' +
+                ' <h2 style="font-size: 30px;margin-bottom: 12px;">' +
+                '<a href="/">Index</a> of ' +
                 originalDir.split('/').map(function(x, i, arr) {
                     return '<a href="' +
                         quoteattr(arr.slice(0, i + 1).join('/')) + '/">' +
