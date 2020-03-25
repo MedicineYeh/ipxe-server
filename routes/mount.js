@@ -30,37 +30,6 @@ router.get('*/*.iso*', async (req, res, next) => {
     }
 });
 
-// Return ISO file lists or mounted directory file list
-async function isDirectory(path) {
-    try {
-        const stat = await fs.stat(path);
-        return stat.isDirectory();
-    } catch (err) {}
-    return false;
-}
-
-router.use('/', async (req, res, next) => {
-    // Unscape is required for special characters and "spaces".
-    const url = path.normalize(querystring.unescape(req.url)).replace(/\/$/g, '');
-    const mnt_path = path.join(MNT_DIR, url);
-
-    // Serve file list or static file if the URL route contains .iso file
-    if (url.search(/\/.*\.iso$/g) >= 0 || url.search(/\/.*\.iso\//g) >= 0) {
-        if (await isDirectory(mnt_path)) {
-            return serveIndex(MNT_DIR, {
-                view: 'details',
-                icons: true,
-                keepPrevDir: true,
-            })(req, res, next);
-        } else {
-            return express.static(MNT_DIR, {
-                dotfiles: 'allow'
-            })(req, res, next);
-        }
-    }
-    return next();
-});
-
 async function reclaim_loop() {
     await mountutil.reclaim();
     // Period of 60s
