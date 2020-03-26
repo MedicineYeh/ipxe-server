@@ -8,6 +8,7 @@ module.exports = (serverInfo, host, dir_path, files) => {
     const repos = files.slice(1)
         .map(x => `inst.addrepo=${path.basename(x, '.iso')},http://${encodeURI(path.join(host, 'iso', dir_path, x))}`);
     const args = [
+        'ipv6.disable=1',
         'inst.repo=${iso-root}',
         repos,
     ];

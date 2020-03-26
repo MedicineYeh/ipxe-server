@@ -10,6 +10,7 @@ module.exports = (serverInfo, host, dir_path, files) => {
     const addon = files.slice(1)
         .map(x => `http://${encodeURI(path.join(host, 'iso', dir_path, x))}`).join(',');
     const args = [
+        'ipv6.disable=1',
         'install=${iso-root}',
         (addon == '') ? '' : `addon=${addon}`,
         'vga=normal',
