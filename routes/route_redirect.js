@@ -12,6 +12,19 @@ async function isDirectory(path) {
     return false;
 }
 
+function proxyFetch(res, next, targetURI) {
+    console.log('Proxy fetching ' + targetURI);
+    const request = http.get(targetURI, (response) => {
+        const contentType = response.headers['content-type'];
+        res.setHeader('Content-Type', contentType);
+        response.pipe(res);
+    });
+    request.on('error', function(e) {
+        console.error(e);
+        next();
+    });
+}
+
 // Match all routes containing media.1
 router.get('/iso/*/media.1/*', async (req, res, next) => {
     if (req.info === undefined) return next();
@@ -30,7 +43,8 @@ router.get('/iso/*/media.1/*', async (req, res, next) => {
             } else {
                 // Redirect to the real folder in other cases
                 const media_uri = req.url.replace('/media.1/', `/${media_dir}/`);
-                res.redirect(media_uri);
+                proxyFetch(res, next, `http://${path.join(req.headers.host, media_uri)}`);
+                return;
             }
             break;
         default:
