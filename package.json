@@ -9,7 +9,7 @@
     "axios": "^0.19.2",
     "express": "*",
     "express-async-errors": "^3.1.1",
-    "morgan": "^1.9.1",
+    "morgan": "^1.10.0",
     "replacestream": "*",
     "serve-index": "^1.9.1",
     "uniqid": "^5.2.0"
