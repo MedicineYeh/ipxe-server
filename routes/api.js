@@ -3,6 +3,7 @@ const replaceStream = require('replacestream');
 const express = require('express');
 const router = express.Router();
 const uniqid = require('uniqid');
+const isReachable = require('is-reachable');
 const axios = require('axios');
 
 let serialID = 0;
@@ -24,45 +25,32 @@ router.get('/parse/boot.cfg', async (req, res) => {
         alt_url.hostname = '127.0.0.1';
         alt_url.port = (process.env.PORT || '3000');
 
-        // File HTTP get requests
-        const [r1, r2] = await Promise.allSettled([
-            axios.get(query.root + '/boot.cfg', {timeout: 3000}),
-            axios.get(alt_url.href + '/boot.cfg', {timeout: 3000})
-        ]);
-        const response = (r1.status == 'fulfilled') ? r1.value : r2.value;
-        // Note that we assume timeout means under port forwarding from unknown gateway
-        if (r1.status == 'rejected') {
-            console.log(`Accessing '${query.root}' rejected: ${r1.reason}`);
-            if (r1.reason.response && r1.reason.response.status == 404) {
-                res.type('text/plain; charset=utf-8')
-                    .status(404)
-                    .send(`Error when querying ${query.root}/boot.cfg\n` +
-                          `Error message:\n${r1.reason.response.statusText}`);
-                return;
-            }
-            if (r2.status == 'rejected') {
-                res.type('text/plain; charset=utf-8')
-                    .status(404)
-                    .send(`Error when querying ${query.root}/boot.cfg\n` +
-                          `Error message:\n${r2.reason.response.statusText}`);
-                return;
-            }
-        }
-        // Patch strings
-        const text = response.data
-            .replace(/\//g, '')                                // Remove all slashes
-            .replace('prefix=', `prefix=${query.root}`)        // Append prefix
-            .replace('cdromBoot', '')                          // Remove unused kernelopt
-            .replace('kernelopt=', `kernelopt=${kernelopt} `); // Append kernelopt
+        const target_url = (await isReachable(query.root)) ? query.root : alt_url;
+        try {
+            // File HTTP get requests
+            const response = await axios.get(target_url + '/boot.cfg', {timeout: 5000});
+            // Patch strings
+            const text = response.data
+                .replace(/\//g, '')                                // Remove all slashes
+                .replace('prefix=', `prefix=${query.root}`)        // Append prefix
+                .replace('cdromBoot', '')                          // Remove unused kernelopt
+                .replace('kernelopt=', `kernelopt=${kernelopt} `); // Append kernelopt
 
-        // Reply
-        if (response.status == 200 || response.status == 302 || response.status == 304) {
-            res.type('text/plain; charset=utf-8').send(text);
-        } else {
+            // Reply
+            if (response.status == 200 || response.status == 302 || response.status == 304) {
+                res.type('text/plain; charset=utf-8').send(text);
+            } else {
+                res.type('text/plain; charset=utf-8')
+                    .status(404)
+                    .send(`Error when querying ${query.root}/boot.cfg\n` +
+                          `Error message:\n${response.statusText}`);
+            }
+        } catch(err) {
+            console.log(`Accessing '${query.root}' rejected: ${err}`);
             res.type('text/plain; charset=utf-8')
                 .status(404)
                 .send(`Error when querying ${query.root}/boot.cfg\n` +
-                      `Error message:\n${response.statusText}`);
+                      `Error message:\n${err.response.statusText}`);
         }
     }
 });
