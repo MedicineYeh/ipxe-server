@@ -3,12 +3,15 @@ const replaceStream = require('replacestream');
 const express = require('express');
 const router = express.Router();
 const uniqid = require('uniqid');
+const isReachable = require('is-reachable');
 
 let serialID = 0;
 
 // Download file to stream
 function download(url, stream_cb, cb) {
+    let finished = false;
     const request = http.get(url, (response) => {
+        finished = true;
         // check if response is success
         if (response.statusCode !== 200) {
             return cb('Response status was ' + response.statusCode);
@@ -18,11 +21,20 @@ function download(url, stream_cb, cb) {
 
     // check for request error too
     request.on('error', (err) => {
+        finished = true;
         return cb(err.message);
     });
+
+    // Deal with timeout problem
+    setTimeout(() => {
+        if (!finished) {
+            request.destroy();
+            console.log("Timeout!!!!");
+        }
+    }, 5000);
 }
 
-router.get('/parse/boot.cfg', (req, res) => {
+router.get('/parse/boot.cfg', async (req, res) => {
     const query = {
         'root': req.query.root ? encodeURI(req.query.root) : '',
         'ks': req.query.ks ? encodeURI(req.query.ks) : '',
@@ -34,7 +46,14 @@ router.get('/parse/boot.cfg', (req, res) => {
     } else {
         console.log(`Generating config with root=${query.root}, ks=${query.ks} and args=${query.args}`);
         const kernelopt = (query.ks) ? `ks=${query.ks} ${query.args}` : query.args;
-        download(query.root + '/boot.cfg',
+        let target_url = query.root;
+        if (!(await isReachable(query.root))) {
+            const new_url = new URL(query.root);
+            new_url.hostname = '127.0.0.1';
+            new_url.port = (process.env.PORT || '3000');
+            target_url = new_url.href;
+        }
+        download(target_url + '/boot.cfg',
             (res_stream) => {
                 res_stream
                     .pipe(replaceStream('=/', '='))

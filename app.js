@@ -71,7 +71,10 @@ app.use((err, req, res, next) => {
         res.status(404).send('No such file or directory. Please review server log.');
     else
         res.status(500).send('Something broke on server side! Please review server log.');
-})
+});
 
 // Start up a server with port 3000
-app.listen(port = 3000, () => console.log(`Listening on port ${port} and directory ${global.PUBLIC_DIR}`))
+app.listen(
+    port = (process.env.PORT || '3000'),
+    () => console.log(`Listening on port ${port} and directory ${global.PUBLIC_DIR}`)
+);
