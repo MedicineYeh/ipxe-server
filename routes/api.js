@@ -3,36 +3,9 @@ const replaceStream = require('replacestream');
 const express = require('express');
 const router = express.Router();
 const uniqid = require('uniqid');
-const isReachable = require('is-reachable');
+const axios = require('axios');
 
 let serialID = 0;
-
-// Download file to stream
-function download(url, stream_cb, cb) {
-    let finished = false;
-    const request = http.get(url, (response) => {
-        finished = true;
-        // check if response is success
-        if (response.statusCode !== 200) {
-            return cb('Response status was ' + response.statusCode);
-        }
-        stream_cb(response);
-    });
-
-    // check for request error too
-    request.on('error', (err) => {
-        finished = true;
-        return cb(err.message);
-    });
-
-    // Deal with timeout problem
-    setTimeout(() => {
-        if (!finished) {
-            request.destroy();
-            console.log("Timeout!!!!");
-        }
-    }, 5000);
-}
 
 router.get('/parse/boot.cfg', async (req, res) => {
     const query = {
@@ -46,26 +19,51 @@ router.get('/parse/boot.cfg', async (req, res) => {
     } else {
         console.log(`Generating config with root=${query.root}, ks=${query.ks} and args=${query.args}`);
         const kernelopt = (query.ks) ? `ks=${query.ks} ${query.args}` : query.args;
-        let target_url = query.root;
-        if (!(await isReachable(query.root))) {
-            const new_url = new URL(query.root);
-            new_url.hostname = '127.0.0.1';
-            new_url.port = (process.env.PORT || '3000');
-            target_url = new_url.href;
+        // Alter the host name to self
+        const alt_url = new URL(query.root);
+        alt_url.hostname = '127.0.0.1';
+        alt_url.port = (process.env.PORT || '3000');
+
+        // File HTTP get requests
+        const [r1, r2] = await Promise.allSettled([
+            axios.get(query.root + '/boot.cfg', {timeout: 3000}),
+            axios.get(alt_url.href + '/boot.cfg', {timeout: 3000})
+        ]);
+        const response = (r1.status == 'fulfilled') ? r1.value : r2.value;
+        // Note that we assume timeout means under port forwarding from unknown gateway
+        if (r1.status == 'rejected') {
+            console.log(`Accessing '${query.root}' rejected: ${r1.reason}`);
+            if (r1.reason.response && r1.reason.response.status == 404) {
+                res.type('text/plain; charset=utf-8')
+                    .status(404)
+                    .send(`Error when querying ${query.root}/boot.cfg\n` +
+                          `Error message:\n${r1.reason.response.statusText}`);
+                return;
+            }
+            if (r2.status == 'rejected') {
+                res.type('text/plain; charset=utf-8')
+                    .status(404)
+                    .send(`Error when querying ${query.root}/boot.cfg\n` +
+                          `Error message:\n${r2.reason.response.statusText}`);
+                return;
+            }
         }
-        download(target_url + '/boot.cfg',
-            (res_stream) => {
-                res_stream
-                    .pipe(replaceStream('=/', '='))
-                    .pipe(replaceStream(' /', ' '))
-                    .pipe(replaceStream('prefix=', `prefix=${query.root}`))
-                    .pipe(replaceStream('cdromBoot', ''))                         // Remove unused kernelopt
-                    .pipe(replaceStream('kernelopt=', `kernelopt=${kernelopt} `)) // Append kernelopt
-                    .pipe(res);
-            }, (msg) => {
-                console.log(msg);
-                res.status(404).send(`Error when querying ${query.root}/boot.cfg\n${msg}`);
-            });
+        // Patch strings
+        const text = response.data
+            .replace(/\//g, '')                                // Remove all slashes
+            .replace('prefix=', `prefix=${query.root}`)        // Append prefix
+            .replace('cdromBoot', '')                          // Remove unused kernelopt
+            .replace('kernelopt=', `kernelopt=${kernelopt} `); // Append kernelopt
+
+        // Reply
+        if (response.status == 200 || response.status == 302 || response.status == 304) {
+            res.type('text/plain; charset=utf-8').send(text);
+        } else {
+            res.type('text/plain; charset=utf-8')
+                .status(404)
+                .send(`Error when querying ${query.root}/boot.cfg\n` +
+                      `Error message:\n${response.statusText}`);
+        }
     }
 });
 
