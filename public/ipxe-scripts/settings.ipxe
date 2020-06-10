@@ -1,7 +1,7 @@
 #!ipxe
 
-# REQUIRED: Absolute URL to the server address
-set root-url http://service.os1.tw:8080
+# OPTIONAL: Absolute URL to the server address (Only use this to redirect to other hosts)
+#set root-url http://service.os1.tw:8080
 
 # REQUIRED: Absolute URL to the menu script, used by boot.ipxe
 set menu-url ${root-url}/ipxe-scripts/menu.ipxe
