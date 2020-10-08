@@ -1,5 +1,7 @@
 FROM node:alpine
 
+# Change working directory for npm and node
+WORKDIR /workdir
 # Create working directory and public directory
 RUN mkdir -p /workdir/public
 
@@ -12,5 +14,4 @@ RUN npm install
 COPY app.js /workdir
 COPY routes /workdir/routes
 
-WORKDIR /workdir
 CMD ["node", "app.js"]
