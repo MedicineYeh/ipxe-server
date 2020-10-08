@@ -21,6 +21,6 @@ module.exports = (serverInfo, host, dir_path, files) => {
         ['/boot/x86_64/loader/initrd'], // List of possible initrd pathes
         ['/boot/x86_64/loader/linux'],  // List of possible vmlinuz pathes
         args.join(' '),                 // Kernel arguments
-        'ks=\${ks-script}'              // Kickstart/preceed template with ks-script variable on target machine
+        'autoyast=\${ks-script}'            // Kickstart/preceed template with ks-script variable on target machine
     );
 }
