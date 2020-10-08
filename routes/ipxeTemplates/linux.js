@@ -19,6 +19,8 @@ goto failed
 :pass_vmlinuz`;
 
     return `#!ipxe
+### Uncomment and edit below to use ks script manually (This line MUST be here)
+# set ks-script http://127.0.0.1/ks/linux/distribution/default.txt
 ### Set up the URL for the ISO images
 set iso-root ${rootURL}
 set kernelArg ${kernelArg}
@@ -27,8 +29,6 @@ set ksTemplate ${ksTemplate}
 echo Server \${Green}${serverInfo.manufacturer}\${NC} \${White}${serverInfo.product}\${NC}
 echo
 
-### Uncomment and edit below to use ks script manually
-# set ks-script http://127.0.0.1/ks/linux/distribution/default.txt
 isset \${ks-script} && echo Using KS: \${Cyan}\${ks-script}\${NC} ||
 isset \${ks-script} && set args \${kernelArg} \${ksTemplate} || set args \${kernelArg}
 echo
