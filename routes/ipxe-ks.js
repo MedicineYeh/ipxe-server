@@ -69,6 +69,15 @@ async function getDirectories(dirPath, depth = 1) {
     }
 }
 
+async function file_exists(path) {
+    try {
+        await fs.access(path);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
 router.get('/*', async (req, res, next) => {
     const dirPath = path.join(KS_DIR, req.info.route);
 
@@ -76,13 +85,27 @@ router.get('/*', async (req, res, next) => {
         res.setHeader('content-type', 'text/plain');
         res.send(kickstart_file(encodeURI(`http://${path.join(req.headers.host, 'ks', req.info.route)}`)));
     } else {
+        // Support AutoYast Rules and Classes
+        if (await file_exists(path.join(dirPath, 'rules/rules.xml'))) {
+            res.send(kickstart_file(encodeURI(`http://${path.join(req.headers.host, 'ks', req.info.route)}/`)));
+            return ;
+        }
+        // Do normal iPXE menu generation
         const directories = await getDirectories(dirPath);
         const allFiles = (await fs.readdir(dirPath)).filter(x => !x.startsWith('.'));
         const dirSet = new Set(directories);
         const files = allFiles.filter(x => !dirSet.has(x));
+        // Support AutoYast Rules and Classes
+        let auto_yast_profiles = [];
+        for (let i = 0; i < directories.length; i++) {
+            if (await file_exists(path.join(dirPath, directories[i], 'rules/rules.xml')))
+                auto_yast_profiles = [...auto_yast_profiles, directories[i]];
+        }
 
         const items = [
-            ...directories.map(x => `item ${encodeURI(path.join('/ipxe/ks', req.info.route, x, '_init_'))} ${x}...`),
+            ...directories.filter(x => !(new Set(auto_yast_profiles)).has(x))
+                          .map(x => `item ${encodeURI(path.join('/ipxe/ks', req.info.route, x, '_init_'))} ${x}...`),
+            ...auto_yast_profiles.map(x => `item ${encodeURI(path.join('/ipxe/ks', req.info.route, x) + '/')} AutoYast-${x}`),
             ...files.sort().map(x => `item ${encodeURI(path.join('/ipxe/ks', req.info.route, x))} ${x}`),
         ];
 
