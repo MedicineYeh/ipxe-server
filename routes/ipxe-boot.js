@@ -5,7 +5,7 @@ const querystring = require('querystring');
 
 const boot_vmware = require('./ipxeTemplates/vmware');
 const boot_rhel = require('./ipxeTemplates/rhel');
-const boot_sles = require('./ipxeTemplates/sles');
+const boot_suse = require('./ipxeTemplates/suse');
 const boot_netboot = require('./ipxeTemplates/netboot');
 const boot_archlinux = require('./ipxeTemplates/archlinux');
 
@@ -54,7 +54,7 @@ router.get('/linux*', async (req, res, next) => {
         case 'sled':
         case 'suse':
         case 'opensuse':
-            boot_target = boot_sles;
+            boot_target = boot_suse;
             break;
 
         case 'oracle':
