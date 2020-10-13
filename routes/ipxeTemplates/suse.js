@@ -14,6 +14,8 @@ module.exports = (serverInfo, host, dir_path, files) => {
         'install=${iso-root}',
         (addon == '') ? '' : `addon=${addon}`,
         'vga=normal',
+        'netsetup=dhcp',
+        'self_update=0',
     ];
     return boot_linux(
         serverInfo,                     // Server information/description {manufacturer, product}
