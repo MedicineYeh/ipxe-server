@@ -14,7 +14,8 @@ module.exports = (serverInfo, host, dir_path, files) => {
         'install=${iso-root}',
         (addon == '') ? '' : `addon=${addon}`,
         'vga=normal',
-        'ifcfg=*=dhcp',
+        'udev.rule="mac=${mac:hex},name=eth0"',
+        'ifcfg=eth0=dhcp',
         'self_update=0',
     ];
     return boot_linux(
