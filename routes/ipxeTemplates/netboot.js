@@ -8,6 +8,8 @@ module.exports = (serverInfo, host, dir_path, files) => {
     const args = [
         'vga=normal',
         'ipv6.disable=1',
+        'net.ifnames=0',
+        'interface=${mac:hex}',
     ];
     const ks_args = [
         'auto=true',
