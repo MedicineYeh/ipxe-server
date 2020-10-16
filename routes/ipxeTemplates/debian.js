@@ -9,6 +9,7 @@ module.exports = (serverInfo, host, dir_path, files) => {
     const args = [
         'vga=normal',
         'ipv6.disable=1',
+        'net.ifnames=0',
         `live-installer/net-image=\${iso-root}/casper/filesystem.squashfs`
     ];
     const ks_args = [
