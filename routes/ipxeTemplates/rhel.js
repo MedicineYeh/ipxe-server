@@ -10,6 +10,8 @@ module.exports = (serverInfo, host, dir_path, files) => {
     const args = [
         'ipv6.disable=1',
         'inst.repo=${iso-root}',
+        'ifname=eth0:${mac:hex}',
+        'ip=eth0:dhcp',
         repos,
     ];
     return boot_linux(
