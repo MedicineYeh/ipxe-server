@@ -26,7 +26,7 @@ cpuid --ext 29 && set archl amd64 || set archl i386
     if (os === 'vmware' && url.split('/').length == 1)
         env_setup += `set ks-script http://${encodeURI(path.join(host, 'ks/vmware/default.cfg'))}`;
     else if (os === 'linux' && url.split('/').length == 2 && (distribution === 'ubuntu' || distribution === 'debian'))
-        env_setup += `set ks-script http://${encodeURI(path.join(host, 'ks/linux', distribution, 'default.seed'))}`;
+        env_setup += `set ks-script http://${encodeURI(path.join(host, 'ks/linux', distribution, 'manual.cfg'))}`;
     else if (os === 'linux' && url.split('/').length == 2)
         env_setup += `set ks-script`;
 
