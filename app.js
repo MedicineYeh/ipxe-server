@@ -2,6 +2,7 @@ const url = require('url');
 const path = require('path');
 const fs = require('fs').promises;
 const querystring = require('querystring');
+const yaml = require('js-yaml');
 
 // 3rd party modules
 const express = require('express');
@@ -13,6 +14,16 @@ global.PUBLIC_DIR = process.env.PUBLIC_DIR ? process.env.PUBLIC_DIR : path.join(
 global.ISO_DIR = path.join(PUBLIC_DIR, 'iso');
 global.KS_DIR = path.join(PUBLIC_DIR, 'ks');
 global.MNT_DIR = '/mnt';
+try {
+    const fss = require('fs');
+    const fileContents = fss.readFileSync('./settings.yaml', 'utf8');
+    global.settings = yaml.safeLoad(fileContents);
+    console.log(global.settings?.title);
+    // console.log(yaml.safeDump(global.settings));
+} catch (e) {
+    console.log('Failed to load config file');
+    console.log(e);
+}
 
 // Project routes
 const route_api = require('./routes/api');

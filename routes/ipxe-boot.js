@@ -79,7 +79,7 @@ router.get('/linux*', async (req, res, next) => {
             return next();
     }
     res.setHeader('content-type', 'text/plain');
-    res.send(boot_target(serverInfo, req.headers.host, dirPath, isoFiles));
+    res.send(boot_target(req.info, serverInfo, req.headers.host, dirPath, isoFiles));
 });
 
 // SPP iPXE boot

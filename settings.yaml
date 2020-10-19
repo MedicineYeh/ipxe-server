@@ -1,0 +1,40 @@
+--- # Default settings to iPXE web server
+title: auto-iPXE Web Interface
+linux:
+  rhel: &rhel_family
+    parameters:
+      - ipv6.disable=1
+  suse: &suse_family
+    parameters:
+      - ipv6.disable=1
+      - vga=normal
+      - self_update=0
+      - ifcfg=eth0=dhcp
+  debian: &debian_family
+    parameters:
+      - vga=normal
+      - ipv6.disable=1
+      - net.ifnames=0
+  # Aliases
+  redhat: *rhel_family
+  centos: *rhel_family
+  fedora: *rhel_family
+  oracle: *rhel_family
+  oracleos: *rhel_family
+  sles: *suse_family
+  sled: *suse_family
+  opensuse: *suse_family
+  ubuntu: *debian_family
+  # Example of all supported fields
+  archlinux:
+    # initrd and kernel can be either a list or an object
+    initrd:
+      - /arch/boot/x86_64/archiso.img
+    # initrd and kernel can be either a list or an object
+    kernel: /arch/boot/x86_64/vmlinuz
+    # parameters must be a list
+    parameters:
+      - archisobasedir=arch
+      - ip=dhcp
+      - cow_spacesize=2G
+      - raid=noautodetect

@@ -8,6 +8,7 @@ services:
       - PUBLIC_DIR=/srv/http
     volumes:
       - /srv/http:/srv/http
+      - ./settings.yaml:/workdir/settings.yaml
     ports:
       - 8080:3000
 

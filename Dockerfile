@@ -13,5 +13,6 @@ RUN npm install
 # Copy the codes
 COPY app.js /workdir
 COPY routes /workdir/routes
+COPY settings.yaml /workdir
 
 CMD ["node", "app.js"]
