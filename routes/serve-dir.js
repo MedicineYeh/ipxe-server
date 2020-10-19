@@ -333,6 +333,7 @@ function serveIndex(root, options = {}) {
 
         try {
             const dir = await fs.promises.readdir(path);
+            res.set('Content-Type', 'text/html; charset=utf-8');
             return res.end([
                 '<!DOCTYPE html>',
                 '<html>',
