@@ -10,6 +10,7 @@
     "express": "*",
     "express-async-errors": "^3.1.1",
     "is-reachable": "^4.0.0",
+    "js-yaml": "^3.14.0",
     "morgan": "^1.10.0",
     "replacestream": "*",
     "serve-index": "^1.9.1",
